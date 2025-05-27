@@ -17,7 +17,7 @@ from models.get_model import get_model
 from utils_dir.evaluation_dist import BinMaskMeter
 import numpy as np
 from progress.bar import Bar as Bar
-from utils_dir import Logger, AverageMeter, mkdir_p
+from utils_dir import Logger, mkdir_p
 from utils_dir.dense_losses import get_dense_tasks_losses
 
 from dataset.hls_opera import HLSData
@@ -444,7 +444,13 @@ def main_worker(gpu, ngpus_per_node, opt):
             ave_loss = (val_loss[0])/1.0
         else:
             total_val_loss = torch.tensor([val_loss[0], val_loss[1], val_loss[2], val_loss[3], val_loss[4]], dtype=torch.float32, device=device)
-            dist.all_reduce(total_val_loss, dist.ReduceOp.SUM, async_op=False)
+
+            if (not dist.is_available()) or (not dist.is_initialized()):
+                # Either torch.distributed is not compiled in, or the process group
+                # has not been initialised
+                pass
+            else:
+                dist.all_reduce(total_val_loss, dist.ReduceOp.SUM, async_op=False)
             val_loss[0], val_loss[1], val_loss[2], val_loss[3], val_loss[4] = total_val_loss.tolist()
             ave_loss = (val_loss[0] + val_loss[1] + val_loss[2] + val_loss[3] + val_loss[4])/5.0
 
@@ -511,7 +517,12 @@ class AverageMeter(object):
         else:
             device = torch.device("cpu")
         total = torch.tensor([self.sum, self.count], dtype=torch.float32, device=device)
-        dist.all_reduce(total, dist.ReduceOp.SUM, async_op=False)
+        if (not dist.is_available()) or (not dist.is_initialized()):
+            # Either torch.distributed is not compiled in, or the process group
+            # has not been initialised
+            pass
+        else:
+            dist.all_reduce(total, dist.ReduceOp.SUM, async_op=False)
         self.sum, self.count = total.tolist()
         self.avg = self.sum / self.count
 

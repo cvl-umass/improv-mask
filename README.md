@@ -37,9 +37,8 @@ Each `*.npy` sample contains the following keys
 
 
 ## Training the models
-1. Run `python train.py`
+1. Run `python train.py --data_dir <path to extracted dataset>`
     - By default it trains a `mobilenetv3` model
-    - Specify the training data directory in `--data_dir <path to extracted dataset>`
     - You can change other parameters as enumerated below. There are other parameters apart from those below, and the descriptions are available in the training code. These other parameters are mostly for distributed training (e.g., number of GPUs, etc)
 
 | parameter     | Default           | Description|

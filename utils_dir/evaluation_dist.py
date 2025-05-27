@@ -49,7 +49,12 @@ class BinMaskMeter:
         else:
             device = torch.device("cpu")
         total = torch.tensor([self.precs_sum, self.recs_sum, self.f1s_sum, self.count], dtype=torch.float32, device=device)
-        dist.all_reduce(total, dist.ReduceOp.SUM, async_op=False)
+        if (not dist.is_available()) or (not dist.is_initialized()):
+            # Either torch.distributed is not compiled in, or the process group
+            # has not been initialised
+            pass
+        else:
+            dist.all_reduce(total, dist.ReduceOp.SUM, async_op=False)
         self.precs_sum, self.recs_sum, self.f1s_sum, self.count = total.tolist()
         
         return (self.f1s_sum/self.count), (self.recs_sum/self.count), (self.precs_sum/self.count)
