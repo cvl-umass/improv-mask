@@ -1,5 +1,5 @@
 # Improving Satellite Imagery Masking using Multi-task and Transfer Learning
-This is the official respository for the paper [here](https://ieeexplore.ieee.org/abstract/document/10925631).
+This is the official respository for the paper published in [IEEE JSTARS 2025](https://ieeexplore.ieee.org/abstract/document/10925631).
 
 ## Dataset
 Download the dataset [here]()
@@ -34,11 +34,14 @@ Each `*.npy` sample contains the following keys
 
 
 ## Setting up the environment
+1. Create a conda environment: `conda create -n improv-mask python=3.9`
+2. Activate environment: `conda activate improv-mask`
+3. Install all required packages: `pip install -r requirements.txt`
 
 
 ## Training the models
-1. Run `python train.py --data_dir <path to extracted dataset>`
-    - By default it trains a `mobilenetv3` model
+1. For single GPU training, run `python train.py --data_dir <path to extracted dataset>`
+    - By default it trains a `mobilenetv3` model. (See [Checkpoints](#checkpoints) for other options)
     - You can change other parameters as enumerated below. There are other parameters apart from those below, and the descriptions are available in the training code. These other parameters are mostly for distributed training (e.g., number of GPUs, etc)
 
 | parameter     | Default           | Description|
@@ -47,12 +50,23 @@ Each `*.npy` sample contains the following keys
 | `--lr`          | 1e-4              | Learning rate |      
 | `--epochs`    | 50       | Number of epochs to run for training |
 | `--backbone`    | mobilenetv3       | Backbone model |
-| `--head`        | mobilenetv3_head  | Head of the model to be used for training. The chosen head should be compatible to the backbone. |
+| `--head`        | mobilenetv3_head  | Head of the model to be used for training. The chosen head should be compatible to the backbone. (See [Checkpoints](#checkpoints) for other options) |
 | `--tasks`       | water_mask cloudshadow_mask cloud_mask snowice_mask sun_mask | Which masks to train on and predict. By default, trains on and predicts on all masks. Can specify only a subset. (e.g., just water_mask: `--tasks water_mask`) |
 | `--out`         | './results/opera-mtl-baselines'   | Directory of where to save training checkpoints and logs.   |
 | `--pretrained`  | 1                 | Set to 1 to use pretrained model (e.g., ImageNet pretrained). 0 if to train from scratch (i.e., random weights) |
-
-2. After training, 3 files will be produced, each starting with the datetime training started, and the notable model characteristics (e.g., backbone, head, etc):
+2. For mulltiple GPU training, run the following:
+```
+python train.py \
+    --data_dir <path to dataset> \
+    --lr 0.0005 \
+    --batch_size 32 \
+    --dist-url 'tcp://127.0.0.1:8003' \
+    --dist-backend 'nccl' \
+    --multiprocessing-distributed \
+    --world-size 1 \
+    --rank 0 
+```
+3. After training, 3 files will be produced, each starting with the datetime training started, and the notable model characteristics (e.g., backbone, head, etc):
     - The checkpoint for the latest trained model: "*_checkpoint.pth.tar"
     - The best checkpoint based on the average loss across all masks/tasks in the validation set: "_best.pth.tar"
     - The log of the train and val loss and metrics: "*_log.txt"
@@ -67,7 +81,20 @@ Each `*.npy` sample contains the following keys
     - a *.png file that shows sample results of the model compared to the ground truth for each of the masks
 
 ## Checkpoints
-In progress
+All checkpoints below predict all masks at the same time. See results in Table IV of the [paper](https://ieeexplore.ieee.org/abstract/document/10925631).
+| `--backbone`      | `--head`          |   Pre-training        | Checkpoint |
+| ---               | ---               | ---                   | ---       |
+| deeplabv3p        | deeplabv3p_head   | ImageNet1k            | [link](https://drive.google.com/file/d/1pZ_a3ey8oyL5FD3RYokVPwO9T8N21pL_/view?usp=sharing) |
+| mobilenetv3       | mobilenetv3_head  | ImageNet1k            | [link](https://drive.google.com/file/d/1qRcKaeP2HunaDKCwRDgh1ym-QNs4p7yP/view?usp=drive_link)  |
+| segnet            | segnet_head       | ImageNet1k            | [link](https://drive.google.com/file/d/1-HxITHfFM6RlYUm0UyiK7Xl6l4Qgi5lB/view?usp=drive_link) |
+| satlas_si_resnet50| satlas_head       | Satlas                | [link](https://drive.google.com/file/d/1Tetwdb7wS8VCXjL49Wn_rQfiqRnooGB3/view?usp=drive_link) |
+| satlas_si_swint   | satlas_head       | Satlas                | [link](https://drive.google.com/file/d/17W2lcI45hyDNV_y12gN5LGKkvZo2GStC/view?usp=drive_link) |
+| swint             | swint_head        | ImageNet1k            | [link](https://drive.google.com/file/d/1bugG-kYfY7cqZ-JuagUHrj8nsprfwlw9/view?usp=drive_link) |
+| satlas_si_swinb   | satlas_head       | Satlas                | [link](https://drive.google.com/file/d/1LQwdO7zSxpM9c0pWuI5FeHyWzSvMOOYV/view?usp=drive_link) |
+| vitb16            | vitb16_head       | ImageNet1k            | [link](https://drive.google.com/file/d/1OJQNCOnfiY-0HLf7puA7jPj9XqXdNfIq/view?usp=drive_link) |
+| prithvi           | prithvi_head      | Prithvi*               | [link](https://drive.google.com/file/d/12wZ-PP3d4CAYpEwdw5zhAm_Cp2qUFJS6/view?usp=drive_link) |
+
+*requires separate environment
 
 ## Citation
 If you found this repository useful, please cite our paper:
