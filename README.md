@@ -94,7 +94,7 @@ All checkpoints below predict all masks at the same time. See results in Table I
 | vitb16            | vitb16_head       | ImageNet1k            | [link](https://drive.google.com/file/d/1OJQNCOnfiY-0HLf7puA7jPj9XqXdNfIq/view?usp=drive_link) |
 | prithvi           | prithvi_head      | Prithvi*               | [link](https://drive.google.com/file/d/12wZ-PP3d4CAYpEwdw5zhAm_Cp2qUFJS6/view?usp=drive_link) |
 
-*requires separate environment
+*To use the Prithvi model, download Prithvi model file [here](https://drive.google.com/file/d/18hQ4kO8lFhjdM-67knnarx8YLw7y5n5z/view?usp=drive_link) and place it in `improv-mask/prithvi/Prithvi_100M.pt`
 
 ## Citation
 If you found this repository useful, please cite our paper:
