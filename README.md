@@ -1,4 +1,5 @@
 # Improving Satellite Imagery Masking using Multi-task and Transfer Learning
+This is the official respository for the paper [here](https://ieeexplore.ieee.org/abstract/document/10925631).
 
 ## Dataset
 Download the dataset [here]()
@@ -54,7 +55,7 @@ Each `*.npy` sample contains the following keys
 
 2. After training, 3 files will be produced, each starting with the datetime training started, and the notable model characteristics (e.g., backbone, head, etc):
     - The checkpoint for the latest trained model: "*_checkpoint.pth.tar"
-    - The best checkpoint based on the average loss in the validation set: "_best.pth.tar"
+    - The best checkpoint based on the average loss across all masks/tasks in the validation set: "_best.pth.tar"
     - The log of the train and val loss and metrics: "*_log.txt"
 
 ## Evaluation
@@ -70,7 +71,7 @@ Each `*.npy` sample contains the following keys
 In progress
 
 ## Citation
-If you found this code useful, please cite out paper:
+If you found this repository useful, please cite our paper:
 ```
 @article{daroya2025improving,
   title={Improving Satellite Imagery Masking using Multi-task and Transfer Learning},
