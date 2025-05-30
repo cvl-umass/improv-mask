@@ -1,7 +1,5 @@
-import os
 import torch
 import numpy as np
-import torch.nn as nn
 from models.get_model import get_model
 import pandas as pd
 from progress.bar import Bar as Bar
@@ -26,7 +24,7 @@ parser.add_argument('--ckpt_path', default=None, type=str, help='specify locatio
 parser.add_argument('--weight', default='uniform', type=str, help='multi-task weighting: uniform, gradnorm, mgda, uncert, dwa, gs')
 parser.add_argument('--backbone', default='mobilenetv3', type=str, help='shared backbone')
 parser.add_argument('--head', default='mobilenetv3_head', type=str, help='task-specific decoder')
-parser.add_argument('--pretrained', default=False, type=int, help='using pretrained weight from ImageNet')
+parser.add_argument('--pretrained', default=False, type=int, help='Set to true to use pretrained weight from ImageNet/Satlas/etc')
 
 
 parser.add_argument('--method', default='vanilla', type=str, help='vanilla or mtan')

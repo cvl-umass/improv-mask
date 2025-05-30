@@ -2,8 +2,8 @@
 This is the official respository for the paper published in [IEEE JSTARS 2025](https://ieeexplore.ieee.org/abstract/document/10925631).
 
 ## Dataset
-Download the dataset [here]()
-- The dataset is about 750GB when extracted
+Download the dataset [here](https://drive.google.com/file/d/1fbEIqji2yKfUOGg_-7jWi5puDJavcmR4/view?usp=sharing)
+- The dataset is about 750GB when extracted, and 550GB as a zip file
 
 ```
 📦 multitask_data_opera
@@ -18,7 +18,7 @@ Download the dataset [here]()
 Each `*.npy` sample contains the following keys
 | key               | size              | description                                                       |
 | ---               | ---               | ---                                                               |
-| features          | int(768,768,6)    | 6 HLS bands that serve as input to model                          |
+| features          | int(768,768,6)    | 6 HLS bands that serve as input to model: red, green, blue, NIR, SWIR-1, SWIR-2*                         |
 | water_mask        | int(768,768)      | water mask from OPERA (ground truth for training)                 |
 | snowice_mask      | int(768,768)      | snowice from OPERA/Fmask                                          |
 | cloudshadow_mask  | int(768,768)      | cloudshadow_mask from OPERA/Fmask                                 |
@@ -31,12 +31,18 @@ Each `*.npy` sample contains the following keys
 | date_str          | str               | date of the obtained tile (can be used for downloading raw data)  |
 | mid_latlon        | float(2,)         | latitude and longitude of the middle of the tile                  |
 
-
+*NOTE: for Sentinel, these are bands 2,3,4,5,6,7. For Landsat, these are bands 2,3,4,8a,11,12
 
 ## Setting up the environment
 1. Create a conda environment: `conda create -n improv-mask python=3.9`
 2. Activate environment: `conda activate improv-mask`
 3. Install all required packages: `pip install -r requirements.txt`
+
+
+## Quickstart: Using the model on a downloaded HLS tile
+1. After installing the environment, you can download the DeepLabv3 trained model [here](https://drive.google.com/file/d/1pZ_a3ey8oyL5FD3RYokVPwO9T8N21pL_/view?usp=sharing). Place it in results/*.pth.tar
+2. Download a sample datapoint [here](https://drive.google.com/file/d/151AoX2d-3rcCE-z1RUMkq5l00CUomTG0/view?usp=sharing) and place it in `improv-mask/sample_data.npy`
+3. Run the notebook `quickstart.ipynb`, and specify the checkpoint from step 1.
 
 
 ## Training the models
